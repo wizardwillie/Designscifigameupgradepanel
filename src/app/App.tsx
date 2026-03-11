@@ -1,167 +1,223 @@
 import { useState } from "react";
-import { UpgradeCard } from "./components/UpgradeCard";
+import { LaserButton } from "./components/LaserButton";
 import { 
-  DollarSign, 
-  Timer, 
-  Layers
+  Zap, 
+  Flame, 
+  Radio, 
+  Maximize2, 
+  Crosshair 
 } from "lucide-react";
 
-interface EconomyUpgrade {
+interface LaserType {
   id: string;
-  title: string;
-  description: string;
-  level: number;
-  baseCost: number;
+  name: string;
   icon: React.ReactNode;
+  color: string;
+  damage: number;
+  fireRate: number;
+  description: string;
 }
 
-const economyUpgrades: EconomyUpgrade[] = [
+const laserTypes: LaserType[] = [
   {
-    id: "target-value",
-    title: "Target Value",
-    description: "Increase the credit value earned from each destroyed target",
-    level: 0,
-    baseCost: 100,
-    icon: <DollarSign className="w-6 h-6 text-green-400" />,
+    id: "simple",
+    name: "Simple Laser",
+    icon: <Zap className="w-8 h-8" />,
+    color: "cyan",
+    damage: 10,
+    fireRate: 1.0,
+    description: "Basic laser weapon with balanced stats",
   },
   {
-    id: "spawn-rate",
-    title: "Spawn Rate",
-    description: "Boost the frequency at which new targets appear in the field",
-    level: 0,
-    baseCost: 250,
-    icon: <Timer className="w-6 h-6 text-cyan-400" />,
+    id: "plasma",
+    name: "Plasma Laser",
+    icon: <Flame className="w-8 h-8" />,
+    color: "purple",
+    damage: 25,
+    fireRate: 0.7,
+    description: "High damage plasma-based weapon",
   },
   {
-    id: "target-diversity",
-    title: "Target Diversity",
-    description: "Unlock rare and valuable target types with bonus rewards",
-    level: 0,
-    baseCost: 500,
-    icon: <Layers className="w-6 h-6 text-purple-400" />,
+    id: "pulse",
+    name: "Pulse Laser",
+    icon: <Radio className="w-8 h-8" />,
+    color: "blue",
+    damage: 15,
+    fireRate: 1.5,
+    description: "Rapid-fire pulsing laser beams",
+  },
+  {
+    id: "scatter",
+    name: "Scatter Laser",
+    icon: <Maximize2 className="w-8 h-8" />,
+    color: "pink",
+    damage: 8,
+    fireRate: 1.2,
+    description: "Multi-target area-of-effect weapon",
+  },
+  {
+    id: "heavy",
+    name: "Heavy Laser",
+    icon: <Crosshair className="w-8 h-8" />,
+    color: "orange",
+    damage: 50,
+    fireRate: 0.4,
+    description: "Devastating heavy laser cannon",
   },
 ];
 
 export default function App() {
-  const [credits, setCredits] = useState(1000);
-  const [upgrades, setUpgrades] = useState(economyUpgrades);
+  const [activeLaser, setActiveLaser] = useState<string>("simple");
 
-  const calculateCost = (baseCost: number, level: number) => {
-    return Math.floor(baseCost * Math.pow(1.2, level));
-  };
-
-  const handleBuyUpgrade = (upgradeId: string) => {
-    const upgrade = upgrades.find((u) => u.id === upgradeId);
-    if (!upgrade) return;
-
-    const cost = calculateCost(upgrade.baseCost, upgrade.level);
-    if (credits < cost) return;
-
-    setCredits((prev) => prev - cost);
-    setUpgrades((prev) =>
-      prev.map((u) =>
-        u.id === upgradeId ? { ...u, level: u.level + 1 } : u
-      )
-    );
-  };
-
-  const addCredits = () => {
-    setCredits((prev) => prev + 500);
-  };
+  const currentLaser = laserTypes.find((laser) => laser.id === activeLaser);
 
   return (
-    <div className="min-h-screen bg-[#0a0f1a] relative overflow-hidden">
-      {/* Background effects */}
+    <div className="min-h-screen bg-[#020817] relative overflow-hidden">
+      {/* Animated background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[150px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
       
       {/* Main container */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-block mb-4">
-            <div className="flex items-center gap-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20 rounded-xl px-6 py-3">
-              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-              <h1 className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 tracking-wide">
-                TARGET ECONOMY
-              </h1>
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
-            </div>
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-1 h-8 bg-gradient-to-b from-cyan-500 to-purple-500 rounded-full" />
+            <h1 className="text-5xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
+              LASER SELECTION
+            </h1>
+            <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-cyan-500 rounded-full" />
           </div>
-          <p className="text-gray-400">
-            Optimize your earnings with economic upgrades
+          <p className="text-gray-400 text-lg">
+            Choose your weapon system
           </p>
         </div>
         
-        {/* Credits Display */}
-        <div className="mb-10">
-          <div className="bg-gradient-to-br from-[#0d1b2a] to-[#1b263b] border border-cyan-500/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-400/40 flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-cyan-400" />
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-                    Available Credits
-                  </div>
-                  <div className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                    {credits.toLocaleString()}
+        {/* Laser Selection Panel */}
+        <div className="bg-gradient-to-br from-[#0d1b2a]/80 to-[#1b263b]/80 backdrop-blur-md border border-cyan-500/20 rounded-2xl p-8 shadow-2xl mb-8">
+          <div className="mb-6">
+            <h2 className="text-xl text-cyan-400 uppercase tracking-wider mb-2">
+              Weapon Systems
+            </h2>
+            <div className="h-[2px] bg-gradient-to-r from-cyan-500 via-purple-500 to-transparent" />
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {laserTypes.map((laser) => (
+              <LaserButton
+                key={laser.id}
+                name={laser.name}
+                icon={laser.icon}
+                color={laser.color}
+                isActive={activeLaser === laser.id}
+                onClick={() => setActiveLaser(laser.id)}
+              />
+            ))}
+          </div>
+        </div>
+        
+        {/* Active Laser Info Display */}
+        {currentLaser && (
+          <div className="bg-gradient-to-br from-[#0d1b2a]/80 to-[#1b263b]/80 backdrop-blur-md border border-purple-500/20 rounded-2xl p-8 shadow-2xl">
+            <div className="mb-6">
+              <h2 className="text-xl text-purple-400 uppercase tracking-wider mb-2">
+                Active Weapon
+              </h2>
+              <div className="h-[2px] bg-gradient-to-r from-purple-500 via-cyan-500 to-transparent" />
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Left: Laser visual */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  {/* Glow effect */}
+                  <div className={`
+                    absolute inset-0 rounded-full blur-3xl opacity-50
+                    ${currentLaser.color === 'cyan' && 'bg-cyan-500'}
+                    ${currentLaser.color === 'purple' && 'bg-purple-500'}
+                    ${currentLaser.color === 'blue' && 'bg-blue-500'}
+                    ${currentLaser.color === 'pink' && 'bg-pink-500'}
+                    ${currentLaser.color === 'orange' && 'bg-orange-500'}
+                  `} />
+                  
+                  {/* Icon display */}
+                  <div className={`
+                    relative w-48 h-48 rounded-2xl flex items-center justify-center
+                    border-4 shadow-2xl
+                    ${currentLaser.color === 'cyan' && 'border-cyan-400 bg-cyan-500/20 shadow-cyan-500/50'}
+                    ${currentLaser.color === 'purple' && 'border-purple-400 bg-purple-500/20 shadow-purple-500/50'}
+                    ${currentLaser.color === 'blue' && 'border-blue-400 bg-blue-500/20 shadow-blue-500/50'}
+                    ${currentLaser.color === 'pink' && 'border-pink-400 bg-pink-500/20 shadow-pink-500/50'}
+                    ${currentLaser.color === 'orange' && 'border-orange-400 bg-orange-500/20 shadow-orange-500/50'}
+                  `}>
+                    <div className={`
+                      ${currentLaser.color === 'cyan' && 'text-cyan-400'}
+                      ${currentLaser.color === 'purple' && 'text-purple-400'}
+                      ${currentLaser.color === 'blue' && 'text-blue-400'}
+                      ${currentLaser.color === 'pink' && 'text-pink-400'}
+                      ${currentLaser.color === 'orange' && 'text-orange-400'}
+                    `}>
+                      <div className="scale-[3]">
+                        {currentLaser.icon}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               
-              <button
-                onClick={addCredits}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg shadow-cyan-500/30"
-              >
-                + 500
-              </button>
+              {/* Right: Stats */}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-3xl text-white mb-2">{currentLaser.name}</h3>
+                  <p className="text-gray-400">{currentLaser.description}</p>
+                </div>
+                
+                <div className="space-y-3 pt-4">
+                  {/* Damage stat */}
+                  <div className="bg-[#0a0f1a] border border-cyan-500/30 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-400 uppercase tracking-wider">Damage</span>
+                      <span className="text-xl text-cyan-400 font-mono">{currentLaser.damage}</span>
+                    </div>
+                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500"
+                        style={{ width: `${(currentLaser.damage / 50) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Fire rate stat */}
+                  <div className="bg-[#0a0f1a] border border-purple-500/30 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-400 uppercase tracking-wider">Fire Rate</span>
+                      <span className="text-xl text-purple-400 font-mono">{currentLaser.fireRate.toFixed(1)}x</span>
+                    </div>
+                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                        style={{ width: `${(currentLaser.fireRate / 1.5) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* DPS calculation */}
+                  <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-400 uppercase tracking-wider">DPS (Damage Per Second)</span>
+                      <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 font-mono">
+                        {(currentLaser.damage * currentLaser.fireRate).toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* Economy Upgrades Section */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="text-sm text-cyan-400 uppercase tracking-[0.3em]">
-              Economy Upgrades
-            </h2>
-            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-          </div>
-        </div>
-        
-        {/* Upgrade Cards */}
-        <div className="space-y-5">
-          {upgrades.map((upgrade) => {
-            const cost = calculateCost(upgrade.baseCost, upgrade.level);
-            return (
-              <UpgradeCard
-                key={upgrade.id}
-                title={upgrade.title}
-                description={upgrade.description}
-                level={upgrade.level}
-                cost={cost}
-                icon={upgrade.icon}
-                onBuy={() => handleBuyUpgrade(upgrade.id)}
-                canAfford={credits >= cost}
-              />
-            );
-          })}
-        </div>
-        
-        {/* Info Footer */}
-        <div className="mt-12 text-center">
-          <div className="inline-block bg-gradient-to-r from-cyan-500/5 to-purple-500/5 border border-cyan-500/20 rounded-lg px-6 py-3">
-            <p className="text-sm text-gray-500">
-              Upgrade costs increase by 20% per level
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
