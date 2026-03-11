@@ -1,15 +1,11 @@
-import { motion } from "motion/react";
-
 interface UpgradeCardProps {
   title: string;
   description: string;
   level: number;
   cost: number;
   currency?: string;
-  icon?: React.ReactNode;
   onBuy: () => void;
   canAfford: boolean;
-  disabled?: boolean;
 }
 
 export function UpgradeCard({
@@ -18,103 +14,49 @@ export function UpgradeCard({
   level,
   cost,
   currency = "CREDITS",
-  icon,
   onBuy,
   canAfford,
-  disabled = false,
 }: UpgradeCardProps) {
-  const isDisabled = disabled || !canAfford;
-
   return (
-    <motion.div
-      whileHover={!isDisabled ? { scale: 1.02, y: -2 } : {}}
-      whileTap={!isDisabled ? { scale: 0.98 } : {}}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="relative bg-gradient-to-r from-[#0d1b2a] to-[#1b263b] rounded-xl border border-blue-500/30 shadow-lg overflow-hidden group"
-    >
-      {/* Animated glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="relative bg-gradient-to-br from-[#1a1d2e] to-[#0f1219] rounded-xl p-4 border border-[#2d3548] hover:border-[#4a5568] transition-all duration-300 group overflow-hidden">
+      {/* Glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       
-      {/* Top glow line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-50" />
-      
-      {/* Main content wrapper */}
-      <div className="relative z-10 flex items-center gap-4 p-5">
-        {/* Icon section */}
-        <div className="flex-shrink-0">
-          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-400/40 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            {icon ? (
-              <div className="text-2xl">{icon}</div>
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500" />
-            )}
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-gray-100 tracking-wide">{title}</h3>
+          <div className="flex items-center gap-1 px-2 py-0.5 bg-[#0f1219] border border-cyan-500/30 rounded-md">
+            <span className="text-xs text-cyan-400">LVL</span>
+            <span className="text-xs text-cyan-300 font-mono">{level}</span>
           </div>
         </div>
         
-        {/* Content section */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-white tracking-wide truncate">{title}</h3>
-            <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded">
-              <span className="text-[10px] text-blue-300 uppercase tracking-wider">Lvl</span>
-              <span className="text-xs text-blue-200 font-mono">{level}</span>
-            </div>
-          </div>
-          
-          <p className="text-sm text-gray-400 leading-snug mb-2 line-clamp-2">{description}</p>
-          
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs">
-              <span className="text-gray-500">{currency}</span>
-              <span className="text-purple-300 font-mono tabular-nums">
-                {cost.toLocaleString()}
-              </span>
-            </div>
-          </div>
-        </div>
+        <p className="text-sm text-gray-400 mb-4 leading-relaxed">{description}</p>
         
-        {/* Button section */}
-        <div className="flex-shrink-0">
-          <motion.button
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 bg-[#0f1219] border border-[#2d3548] rounded-lg px-3 py-2">
+            <div className="text-xs text-gray-500 mb-0.5">{currency}</div>
+            <div className="text-sm font-mono text-purple-300">{cost.toLocaleString()}</div>
+          </div>
+          
+          <button
             onClick={onBuy}
-            disabled={isDisabled}
-            whileHover={!isDisabled ? { scale: 1.05 } : {}}
-            whileTap={!isDisabled ? { scale: 0.95 } : {}}
-            className={`
-              px-6 py-3 rounded-lg transition-all duration-300 relative overflow-hidden
-              ${
-                !isDisabled
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50'
-                  : 'bg-gray-800/50 border border-gray-700/50 text-gray-600 cursor-not-allowed'
-              }
-            `}
+            disabled={!canAfford}
+            className={`px-6 py-2 rounded-lg transition-all duration-300 ${
+              canAfford
+                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40'
+                : 'bg-[#1a1d2e] border border-[#2d3548] text-gray-600 cursor-not-allowed'
+            }`}
           >
-            {!isDisabled && (
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                animate={{
-                  x: ['-100%', '100%'],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatDelay: 1,
-                }}
-              />
-            )}
-            <span className="relative z-10 tracking-wider">
-              {isDisabled && !canAfford ? 'LOCKED' : 'BUY'}
-            </span>
-          </motion.button>
+            BUY
+          </button>
         </div>
       </div>
       
-      {/* Bottom edge highlight */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-      
       {/* Corner accents */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-bl-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-tr-3xl pointer-events-none" />
-    </motion.div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-bl-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-tr-full pointer-events-none" />
+    </div>
   );
 }

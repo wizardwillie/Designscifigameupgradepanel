@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { UpgradeCard } from "./components/UpgradeCard";
-import { 
-  Zap, 
-  Shield, 
-  Target, 
-  Cpu, 
-  Rocket, 
-  Battery,
-  Sparkles,
-  TrendingUp 
-} from "lucide-react";
+import { SectionHeader } from "./components/SectionHeader";
 
 interface Upgrade {
   id: string;
@@ -17,78 +8,117 @@ interface Upgrade {
   description: string;
   level: number;
   baseCost: number;
-  icon: React.ReactNode;
+  category: string;
 }
 
 const initialUpgrades: Upgrade[] = [
+  // LASERS
   {
-    id: "plasma-cannon",
-    title: "Plasma Cannon",
-    description: "High-energy weapon system with devastating firepower",
+    id: "laser-power",
+    title: "Laser Power",
+    description: "Increase damage output of primary laser systems.",
     level: 0,
     baseCost: 100,
-    icon: <Zap className="w-6 h-6 text-blue-400" />,
+    category: "LASERS",
   },
   {
-    id: "shield-matrix",
-    title: "Shield Matrix",
-    description: "Advanced defensive grid providing superior protection",
+    id: "beam-focus",
+    title: "Beam Focus",
+    description: "Enhance laser precision and critical hit chance.",
     level: 0,
     baseCost: 250,
-    icon: <Shield className="w-6 h-6 text-purple-400" />,
+    category: "LASERS",
   },
   {
-    id: "targeting-ai",
-    title: "Targeting AI",
-    description: "Neural network for enhanced accuracy and precision",
+    id: "heat-sink",
+    title: "Heat Sink",
+    description: "Improve cooling systems for sustained fire.",
     level: 0,
     baseCost: 500,
-    icon: <Target className="w-6 h-6 text-cyan-400" />,
+    category: "LASERS",
   },
+  
+  // LASER UPGRADES
   {
-    id: "quantum-core",
-    title: "Quantum Core",
-    description: "Harness quantum computing for exponential processing power",
+    id: "multi-beam",
+    title: "Multi-Beam Array",
+    description: "Add additional laser emitters to your arsenal.",
     level: 0,
     baseCost: 1000,
-    icon: <Cpu className="w-6 h-6 text-indigo-400" />,
+    category: "LASER UPGRADES",
   },
   {
-    id: "boost-thrusters",
-    title: "Boost Thrusters",
-    description: "Experimental propulsion system for incredible speed",
+    id: "plasma-core",
+    title: "Plasma Core",
+    description: "Upgrade to plasma-based laser technology.",
     level: 0,
-    baseCost: 2000,
-    icon: <Rocket className="w-6 h-6 text-orange-400" />,
+    baseCost: 2500,
+    category: "LASER UPGRADES",
   },
   {
-    id: "reactor-core",
-    title: "Reactor Core",
-    description: "Nuclear fusion reactor providing unlimited energy",
+    id: "quantum-lens",
+    title: "Quantum Lens",
+    description: "Harness quantum entanglement for instant beam delivery.",
     level: 0,
     baseCost: 5000,
-    icon: <Battery className="w-6 h-6 text-green-400" />,
+    category: "LASER UPGRADES",
   },
+  
+  // TARGET ECONOMY
   {
-    id: "nano-repair",
-    title: "Nano Repair",
-    description: "Self-repairing nanobots for automatic hull regeneration",
+    id: "credit-multiplier",
+    title: "Credit Multiplier",
+    description: "Increase credits earned per target destroyed.",
     level: 0,
-    baseCost: 7500,
-    icon: <Sparkles className="w-6 h-6 text-pink-400" />,
+    baseCost: 750,
+    category: "TARGET ECONOMY",
   },
   {
-    id: "economy-boost",
-    title: "Economy Boost",
-    description: "Optimized resource gathering and credit multiplication",
+    id: "salvage-drones",
+    title: "Salvage Drones",
+    description: "Deploy drones to collect additional resources.",
+    level: 0,
+    baseCost: 1500,
+    category: "TARGET ECONOMY",
+  },
+  {
+    id: "bonus-scanner",
+    title: "Bonus Scanner",
+    description: "Detect high-value targets with improved sensors.",
+    level: 0,
+    baseCost: 3000,
+    category: "TARGET ECONOMY",
+  },
+  
+  // AUTOMATION
+  {
+    id: "auto-aim",
+    title: "Auto-Targeting",
+    description: "Automatically acquire and engage hostile targets.",
+    level: 0,
+    baseCost: 2000,
+    category: "AUTOMATION",
+  },
+  {
+    id: "auto-fire",
+    title: "Auto-Fire Protocol",
+    description: "Enable automated firing sequences.",
+    level: 0,
+    baseCost: 4000,
+    category: "AUTOMATION",
+  },
+  {
+    id: "ai-commander",
+    title: "AI Commander",
+    description: "Deploy advanced AI to optimize all systems.",
     level: 0,
     baseCost: 10000,
-    icon: <TrendingUp className="w-6 h-6 text-yellow-400" />,
+    category: "AUTOMATION",
   },
 ];
 
 export default function App() {
-  const [credits, setCredits] = useState(15000);
+  const [credits, setCredits] = useState(5000);
   const [upgrades, setUpgrades] = useState(initialUpgrades);
 
   const calculateCost = (baseCost: number, level: number) => {
@@ -110,77 +140,101 @@ export default function App() {
     );
   };
 
-  const addCredits = () => {
-    setCredits((prev) => prev + 5000);
+  const categories = ["LASERS", "LASER UPGRADES", "TARGET ECONOMY", "AUTOMATION"];
+
+  const getCategoryIcon = (category: string) => {
+    const icons: Record<string, string> = {
+      LASERS: "⚡",
+      "LASER UPGRADES": "🔧",
+      "TARGET ECONOMY": "💰",
+      AUTOMATION: "🤖",
+    };
+    return icons[category];
   };
 
   return (
-    <div className="min-h-screen bg-[#020817] relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
+    <div className="min-h-screen bg-[#0a0c14] relative overflow-hidden">
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      
+      {/* Ambient glow effects */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
       
       {/* Main container */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">
-            UPGRADE SYSTEM
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Sci-Fi Game Upgrade Card Component Showcase
-          </p>
-        </div>
-        
-        {/* Credits Display */}
-        <div className="mb-8 flex items-center justify-center gap-4">
-          <div className="bg-gradient-to-r from-[#0d1b2a] to-[#1b263b] border border-blue-500/30 rounded-xl px-8 py-4 shadow-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse shadow-lg shadow-blue-400/50" />
-              <div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Available Credits</div>
-                <div className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                  {credits.toLocaleString()}
+      <div className="relative z-10 min-h-screen flex">
+        {/* Upgrade Panel */}
+        <div className="w-[450px] bg-gradient-to-b from-[#13161f]/95 to-[#0f1219]/95 backdrop-blur-sm border-r border-[#2d3548] shadow-2xl">
+          {/* Panel Header */}
+          <div className="sticky top-0 bg-gradient-to-b from-[#1a1d2e] to-[#13161f] border-b border-cyan-500/30 p-6 z-20">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-xl tracking-wider text-gray-100">UPGRADES</h1>
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-lg shadow-cyan-400/50" />
+            </div>
+            
+            {/* Credits Display */}
+            <div className="bg-[#0f1219] border border-[#2d3548] rounded-lg p-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5" />
+              <div className="relative flex items-center justify-between">
+                <span className="text-sm text-gray-400 tracking-wide">CREDITS</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                  <span className="text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+                    {credits.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
           
-          <button
-            onClick={addCredits}
-            className="px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-400 hover:to-emerald-500 transition-all duration-300 shadow-lg shadow-green-500/30 hover:shadow-green-400/50"
-          >
-            + 5,000
-          </button>
+          {/* Scrollable Upgrade List */}
+          <div className="h-[calc(100vh-180px)] overflow-y-auto p-6 space-y-3 scrollbar-thin scrollbar-thumb-cyan-500/20 scrollbar-track-transparent">
+            {categories.map((category) => {
+              const categoryUpgrades = upgrades.filter(
+                (u) => u.category === category
+              );
+              
+              return (
+                <div key={category}>
+                  <SectionHeader 
+                    title={category} 
+                    icon={getCategoryIcon(category)} 
+                  />
+                  <div className="space-y-3">
+                    {categoryUpgrades.map((upgrade) => {
+                      const cost = calculateCost(upgrade.baseCost, upgrade.level);
+                      return (
+                        <UpgradeCard
+                          key={upgrade.id}
+                          title={upgrade.title}
+                          description={upgrade.description}
+                          level={upgrade.level}
+                          cost={cost}
+                          onBuy={() => handleBuyUpgrade(upgrade.id)}
+                          canAfford={credits >= cost}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
         
-        {/* Upgrade Cards Grid */}
-        <div className="space-y-4">
-          {upgrades.map((upgrade) => {
-            const cost = calculateCost(upgrade.baseCost, upgrade.level);
-            return (
-              <UpgradeCard
-                key={upgrade.id}
-                title={upgrade.title}
-                description={upgrade.description}
-                level={upgrade.level}
-                cost={cost}
-                icon={upgrade.icon}
-                onBuy={() => handleBuyUpgrade(upgrade.id)}
-                canAfford={credits >= cost}
-              />
-            );
-          })}
-        </div>
-        
-        {/* Footer info */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-gray-600">
-            Reusable sci-fi upgrade card component with animations and glow effects
-          </p>
+        {/* Main Game Area (Right Side) */}
+        <div className="flex-1 flex items-center justify-center p-12">
+          <div className="text-center space-y-4">
+            <div className="inline-block p-6 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-2xl backdrop-blur-sm">
+              <div className="w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-cyan-500/50 shadow-lg shadow-cyan-500/20">
+                <span className="text-6xl">🎯</span>
+              </div>
+            </div>
+            <h2 className="text-3xl text-gray-300 tracking-wide">Game Area</h2>
+            <p className="text-gray-500 max-w-md">
+              This is where your incremental game mechanics would display. Purchase upgrades from the panel to enhance your capabilities.
+            </p>
+          </div>
         </div>
       </div>
     </div>
